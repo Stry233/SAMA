@@ -1,0 +1,20 @@
+{
+  "block_size": 2048,
+  "vocab_size": 32000,
+  "padded_vocab_size": 32000,
+  "n_layer": 18,
+  "n_head": 14,
+  "n_embd": 896,
+  "rotary_percentage": 1.0,
+  "parallel_residual": false,
+  "bias": false,
+  "n_query_groups": 14,
+  "shared_attention_norm": false,
+  "_norm_class": "FusedRMSNorm",
+  "norm_eps": 1e-05,
+  "_mlp_class": "LLaMAMLP",
+  "intermediate_size": 3584,
+  "condense_ratio": 1,
+  "model_type": "mdm",
+  "use_cache": false
+}

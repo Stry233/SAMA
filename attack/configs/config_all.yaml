@@ -1,0 +1,49 @@
+global:
+  load_from_base_dir: true
+  target_model: "./"
+  tokenizer: "./"
+  datasets:
+    - json_train_path: "../../train_subset.json"
+      json_test_path: "../../test_subset.json"
+  batch_size: 6
+  seed: 42
+  device: "cuda"  # This will use all available GPUs
+  fpr_thresholds:
+    - 0.1
+    - 0.01
+    - 0.001
+  n_bootstrap_samples: 10
+  test_samples: null  # Adjust this number as needed
+  max_length: 512
+
+
+loss:
+ module: loss
+ mc_num: 4
+
+loss-calibration:
+  module: "ratio"
+  reference_model_path: "GSAI-ML/LLaDA-8B-Base"
+  reference_device: "cuda"
+
+zlib:
+ module: zlib
+
+lowercase:
+ module: lowercase
+
+Sama:
+  module: "sama"
+  steps: 4
+  subset_size: 8          # l for each local subset vote
+  num_subsets: 128        # number of subsets per step
+  l_schedule: "linear"    # or "geometric"
+  min_mask_frac: 0.05     # ~5% of valid tokens masked at early steps
+  max_mask_frac: 0.50     # up to ~50% by the last step
+  batch_size: 8
+  max_length: 512
+  reference_model_path: "GSAI-ML/LLaDA-8B-Base"
+  reference_device: "cuda"
+  seed: 42
+  save_metadata: true
+  metadata_dir: "YOUR_METADATA_DIR_HERE"
