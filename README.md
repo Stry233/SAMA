@@ -5,11 +5,15 @@
 
 This repository contains the implementation of SAMA (Subset-Aggregated Membership Attack) and baseline methods for evaluating membership inference vulnerabilities in Diffusion Language Models (DLMs).
 
-<div style="text-align: center;">
+<p align="center">
   <a href="res/pipe.jpg">
-    <img src="res/pipe.jpg" style="width: 70%;" alt="Pie figure">
+    <img src="res/pipe.jpg" width="70%" alt="Pipeline overview">
   </a>
-</div>
+  <br>
+  <em>
+    Overview of SAMA
+  </em>
+</p>
 
 ## Repository Structure
 
