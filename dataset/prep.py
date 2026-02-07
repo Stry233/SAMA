@@ -1,3 +1,4 @@
+import argparse
 import os
 import json
 from datasets import load_dataset
@@ -178,10 +179,13 @@ def create_subset_dataset(
     print("---------------------------------------------------\n")
 
 
-def batch_generate_subsets(dataset_list, num_sample=20000, mode="pretraining",
+def batch_generate_subsets(dataset_list, output_base_dir=".", num_sample=20000, mode="pretraining",
                            context=None, member_ratio=0.5, tokenizer_name="GSAI-ML/LLaDA-8B-Base"):
     """
     Given a list of dataset specifications, run create_subset_dataset on each.
+
+    Args:
+        output_base_dir: Base directory under which per-dataset subdirectories are created.
     """
     for ds_spec in dataset_list:
         ds_name = ds_spec["name"]
@@ -192,9 +196,11 @@ def batch_generate_subsets(dataset_list, num_sample=20000, mode="pretraining",
         # Build an output directory name, e.g., "subset_wikitext-wikitext-103-v1"
         # if config is present.
         if ds_config:
-            out_dir = f"{ds_name.split('/')[-1]}-{ds_config}-subset{'-sft' if mode == 'sft' else ''}"
+            subdir = f"{ds_name.split('/')[-1]}-{ds_config}-subset{'-sft' if mode == 'sft' else ''}"
         else:
-            out_dir = f"{ds_name.split('/')[-1]}-subset{'-sft' if mode == 'sft' else ''}"
+            subdir = f"{ds_name.split('/')[-1]}-subset{'-sft' if mode == 'sft' else ''}"
+
+        out_dir = os.path.join(output_base_dir, subdir)
 
         create_subset_dataset(
             dataset_name=ds_name,
@@ -210,42 +216,63 @@ def batch_generate_subsets(dataset_list, num_sample=20000, mode="pretraining",
         )
 
 
+MAIN_DATASETS = [
+    {
+        "name": "EleutherAI/wikitext_document_level",
+        "config": "wikitext-103-v1",
+        "split": "train",
+        "text_column": "page"
+    },
+    {
+        "name": "sh0416/ag_news",
+        "config": None,
+        "split": "train",
+        "text_column": "description"
+    },
+    {
+        "name": "EdinburghNLP/xsum",
+        "config": None,
+        "split": "train",
+        "text_column": "document"
+    },
+]
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Prepare standard NLP datasets for membership inference experiments."
+    )
+    parser.add_argument(
+        "--output-dir", type=str,
+        default=os.environ.get("SAMA_DATASET_PATH", "./"),
+        help="Base output directory for prepared datasets (default: $SAMA_DATASET_PATH or ./)."
+    )
+    parser.add_argument(
+        "--num-samples", type=int, default=20000,
+        help="Number of samples to draw from each dataset (default: 20000)."
+    )
+    parser.add_argument(
+        "--mode", type=str, default="pretraining", choices=["pretraining", "sft"],
+        help="Dataset preparation mode (default: pretraining)."
+    )
+    parser.add_argument(
+        "--tokenizer", type=str, default="GSAI-ML/LLaDA-8B-Base",
+        help="Tokenizer name for SFT mode (default: GSAI-ML/LLaDA-8B-Base)."
+    )
+    parser.add_argument(
+        "--member-ratio", type=float, default=0.5,
+        help="Fraction of samples allocated to the member subset (default: 0.5)."
+    )
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    # Each entry must have:
-    #   "name":          The primary dataset name on HuggingFace
-    #   "config":        The dataset config (if any)
-    #   "split":         Which split to load (default = "train")
-    #   "text_column":   Which column to use for text in 'pretraining' mode
-    #
-    # For sft mode, your dataset must have 'source_text' and 'target_text' columns
-    # (not the case with these three examples).
-
-    MAIN_DATASETS = [
-        {
-            "name": "EleutherAI/wikitext_document_level",
-            "config": "wikitext-103-v1",
-            "split": "train",
-            "text_column": "page"
-        },
-        {
-            "name": "sh0416/ag_news",
-            "config": None,  # no subset
-            "split": "train",
-            "text_column": "description"
-        },
-        {
-            "name": "EdinburghNLP/xsum",
-            "config": None,  # no subset
-            "split": "train",
-            "text_column": "document"
-        },
-
-    ]
-
-    # We want to sample 20,000 examples from each.
-    # We'll do it in "pretraining" mode for these single-text-column datasets.
+    args = parse_args()
     batch_generate_subsets(
         dataset_list=MAIN_DATASETS,
-        num_sample=20000,
-        mode="pretraining"
+        output_base_dir=args.output_dir,
+        num_sample=args.num_samples,
+        mode=args.mode,
+        tokenizer_name=args.tokenizer,
+        member_ratio=args.member_ratio,
     )

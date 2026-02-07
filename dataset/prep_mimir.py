@@ -15,13 +15,10 @@ which will print something like:
     })
 """
 
+import argparse
 import os
 import json
 from datasets import load_dataset
-
-from huggingface_hub import HfFolder
-token = HfFolder.get_token()
-print("Token:", token)
 
 
 def create_mimir_json(dataset_name="pile_cc", split_name="ngram_7_0.2", output_dir="."):
@@ -65,10 +62,37 @@ def create_mimir_json(dataset_name="pile_cc", split_name="ngram_7_0.2", output_d
     print(f"Test set (non-members) size: {len(test_data)}")
     print(f"Output JSON files are stored in: {output_dir}")
 
+ALL_MIMIR_DATASETS = [
+    "arxiv", "github", "hackernews", "pile_cc", "pubmed_central", "wikipedia_(en)"
+]
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Prepare MIMIR benchmark datasets for membership inference experiments."
+    )
+    parser.add_argument(
+        "--output-dir", type=str,
+        default=os.environ.get("SAMA_DATASET_PATH", "./"),
+        help="Base output directory for prepared datasets (default: $SAMA_DATASET_PATH or ./)."
+    )
+    parser.add_argument(
+        "--split-name", type=str, default="ngram_13_0.8",
+        help="MIMIR split to load (default: ngram_13_0.8)."
+    )
+    parser.add_argument(
+        "--datasets", nargs="+", default=ALL_MIMIR_DATASETS,
+        choices=ALL_MIMIR_DATASETS,
+        help="Which MIMIR datasets to prepare (default: all)."
+    )
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    create_mimir_json(dataset_name="arxiv", split_name="ngram_13_0.8", output_dir="./")
-    create_mimir_json(dataset_name="github", split_name="ngram_13_0.8", output_dir="./")
-    create_mimir_json(dataset_name="hackernews", split_name="ngram_13_0.8", output_dir="./")
-    create_mimir_json(dataset_name="pile_cc", split_name="ngram_13_0.8", output_dir="./")
-    create_mimir_json(dataset_name="pubmed_central", split_name="ngram_13_0.8", output_dir="./")
-    create_mimir_json(dataset_name="wikipedia_(en)", split_name="ngram_13_0.8", output_dir="./")
+    args = parse_args()
+    for ds_name in args.datasets:
+        create_mimir_json(
+            dataset_name=ds_name,
+            split_name=args.split_name,
+            output_dir=args.output_dir,
+        )
