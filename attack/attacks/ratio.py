@@ -1,4 +1,5 @@
 # https://www.usenix.org/system/files/sec21-carlini-extracting.pdf
+import os
 from attacks import AbstractAttack
 from attacks.utils import batch_nlloss, compute_nlloss
 from datasets import Dataset
@@ -16,7 +17,7 @@ class RatioAttack(AbstractAttack):
 
     def _load_reference(self):
         from huggingface_hub import login
-        login(token=self.config.get('hf_token', ''))
+        login(token=self.config.get('hf_token') or os.environ.get('HF_TOKEN', ''))
         reference_model = AutoModelForCausalLM.from_pretrained(self.config['reference_model_path'], device_map='auto')
         reference_tokenizer = AutoTokenizer.from_pretrained(self.config['reference_model_path'])
         reference_tokenizer.pad_token = reference_tokenizer.eos_token

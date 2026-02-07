@@ -3,8 +3,8 @@ global:
   target_model: "./"
   tokenizer: "./"
   datasets:
-    - json_train_path: "../../train_subset.json"
-      json_test_path: "../../test_subset.json"
+    - json_train_path: "./train_subset.json"
+      json_test_path: "./test_subset.json"
   batch_size: 6
   seed: 42
   device: "cuda"  # This will use all available GPUs
@@ -46,4 +46,4 @@ Sama:
   reference_device: "cuda"
   seed: 42
   save_metadata: true
-  metadata_dir: "YOUR_METADATA_DIR_HERE"
+  metadata_dir: ""  # Set via SAMA_METADATA_DIR env variable, or specify a path here

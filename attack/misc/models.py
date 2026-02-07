@@ -32,7 +32,7 @@ class ModelManager:
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
 
-        model = AutoModel.from_pretrained(model_name, trust_remote_code=True, load_in_4bit=True)
+        model = AutoModel.from_pretrained(model_name, trust_remote_code=True)
         logging.info(f"Base model {model_name} loaded. Type: {type(model).__name__}")
 
         if lora_adapter_path:

@@ -63,7 +63,7 @@ class SamaAttack(AbstractAttack):
 
         # METADATA SAVING
         self.save_metadata = config.get("save_metadata", True)
-        self.metadata_dir = config.get("metadata_dir", "./")
+        self.metadata_dir = config.get("metadata_dir") or os.environ.get("SAMA_METADATA_DIR", "./")
         self.metadata_dir = os.path.join(self.metadata_dir, f"sama_metadata_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
         if self.save_metadata:
             os.makedirs(self.metadata_dir, exist_ok=True)
@@ -85,7 +85,7 @@ class SamaAttack(AbstractAttack):
         if not ref_model_path:
             raise ValueError("reference_model_path must be specified")
 
-        hf_token = config.get('hf_token')
+        hf_token = config.get('hf_token') or os.environ.get('HF_TOKEN')
         if hf_token:
             login(token=hf_token)
 
