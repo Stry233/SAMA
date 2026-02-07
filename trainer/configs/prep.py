@@ -32,20 +32,22 @@ DATASETS = [
 
 # --- Base Paths ---
 # The base directory where your datasets are stored.
-BASE_DATASET_PATH = "YOUR_PATH_HERE"
+# Set via environment variable SAMA_DATASET_PATH, or change the fallback here.
+BASE_DATASET_PATH = os.environ.get("SAMA_DATASET_PATH", "./")
 
 # --- W&B Settings ---
-WANDB_PROJECT = "Diff_LLM"
-WANDB_GROUP = "SAMA"
+# Override via SAMA_WANDB_PROJECT / SAMA_WANDB_GROUP environment variables.
+WANDB_PROJECT = os.environ.get("SAMA_WANDB_PROJECT", "Diff_LLM")
+WANDB_GROUP = os.environ.get("SAMA_WANDB_GROUP", "SAMA")
 
 # --- Tokenizer Settings ---
-TOKENIZER_MAX_LENGTH = 128
+TOKENIZER_MAX_LENGTH = 512
 
 # --- Training Hyperparameters ---
 # All training parameters are defined here for easy modification.
 TRAINING_PARAMS = {
-    "batch_size": 1,
-    "gradient_accumulation_steps": 48,
+    "batch_size": 48,
+    "gradient_accumulation_steps": 1,
     "learning_rate": "1.0e-5",
     "weight_decay": 0.1,
     "warmup_steps": 500,

@@ -5,10 +5,10 @@ This repository contains the essential scripts and configurations to train the D
 ## Repository Structure
 ```
 ./train
-├── configs/                     
-│   └── *YAML configuration files*         # Contains various YAML files defining training setups 
-│                                          # and model configurations (e.g., raw data, masking options).
-│                                          # Also includes a subfolder with model definition JSONs.
+├── configs/
+│   └── prep.py                            # Script to generate YAML configuration files for all
+│                                          # model/dataset combinations. Run it to produce the
+│                                          # YAML files that define training setups and parameters.
 ├── LICENSE
 ├── llada/                          
 │   ├── configuration_llada.py
@@ -64,7 +64,7 @@ Note that `transformers==4.38.2` is required if we need to replicate results fro
 - The `trainer.py` overrides the default training logic from Hugging Face's Trainer.
 - Implements token masking logic to introduce noise and improve robustness during training given by LLaDA's [GUIDELINE.md](https://huggingface.co/spaces/multimodalart/LLaDA/blob/main/GUIDELINES.md)
 
-Adjust YAML files in `configs` to change model size, dataset locations, and training parameters.
+Run `python configs/prep.py` to generate the YAML config files. Adjust the parameters in `prep.py` to change model size, dataset locations, and training hyperparameters.
 
 ## Dependencies
 Install dependencies before training:
