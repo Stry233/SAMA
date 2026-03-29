@@ -7,7 +7,7 @@ This repository contains the implementation of SAMA (Subset-Aggregated Membershi
 
 <p align="center">
   <a href="res/pipe.jpg">
-    <img src="res/pipe.jpg" width="70%" alt="Pipeline overview">
+    <img src="res/pipe.jpg" width="80%" alt="Pipeline overview">
   </a>
   <br>
   <em>
@@ -150,10 +150,11 @@ loss-calibration:
 
 ## Cite our work
 ```
-@article{chen2026membership,
-  title={Membership Inference Attacks Against Fine-tuned Diffusion Language Models},
-  author={Chen, Yuetian and Zhang, Kaiyuan and Du, Yuntao and Stoppa, Edoardo and Fleming, Charles and Kundu, Ashish and Ribeiro, Bruno and Li, Ninghui},
-  journal={arXiv preprint arXiv:2601.20125},
-  year={2026}
+@inproceedings{chen2026membership,
+    title={Membership Inference Attacks Against Fine-tuned Diffusion Language Models},
+    author={Yuetian Chen and Kaiyuan Zhang and Yuntao Du and Edoardo Stoppa and Charles Fleming and Ashish Kundu and Bruno Ribeiro and Ninghui Li},
+    booktitle={The Fourteenth International Conference on Learning Representations},
+    year={2026},
+    url={https://openreview.net/forum?id=oWKJursYpW}
 }
 ```
